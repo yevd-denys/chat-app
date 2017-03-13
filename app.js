@@ -8,12 +8,16 @@ var bodyParser = require('body-parser');
 
 var routes = require('./routes');
 var users = require('./routes/user');
+var config = require('./config');
+var log = require('./libs/log')(module);
 
 var app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.set('port', config.get('port'));
+log.info(config.get('port'));
 
 app.use(favicon());
 app.use(logger('dev'));
