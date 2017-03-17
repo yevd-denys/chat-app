@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
 var mongoose = require('./libs/mongoose');
+
 var MongoStore = require('connect-mongo')(express);
 
 app.use(express.session({
@@ -31,17 +32,16 @@ app.use(express.session({
     store: new MongoStore({mongooseConnection: mongoose.connection})
 }));
 
-app.use(function (req, res, next) {
-   req.session.numberOfVisits = req.session.numberOfVisits + 1 || 1;
-   res.send("Visits: " + req.session.numberOfVisits);
-});
+app.use(func);
+app.use(require('./middleware/loadUser'));
 
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
 require('./routes')(app);
 
-app.use(func);
+app.use(express.static(path.join(__dirname, 'public')));
+
+
 
 app.use(function(err, req, res, next) {
     if (typeof err == 'number') { // next(404);
