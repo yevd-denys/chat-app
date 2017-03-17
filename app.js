@@ -20,13 +20,29 @@ app.use(favicon());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
+
+var mongoose = require('./libs/mongoose');
+var MongoStore = require('connect-mongo')(express);
+
+app.use(express.session({
+    secret: config.get('session:secret'),
+    key: config.get('session:key'),
+    cookie: config.get('session:cookie'),
+    store: new MongoStore({mongooseConnection: mongoose.connection})
+}));
+
+app.use(function (req, res, next) {
+   req.session.numberOfVisits = req.session.numberOfVisits + 1 || 1;
+   res.send("Visits: " + req.session.numberOfVisits);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(app.router);
 
 require('./routes')(app);
 
 app.use(func);
-console.log(func);
+
 app.use(function(err, req, res, next) {
     if (typeof err == 'number') { // next(404);
         err = new HttpError(err);
