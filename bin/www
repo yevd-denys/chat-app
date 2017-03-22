@@ -7,11 +7,4 @@ var server = app.listen(app.get('port'), function() {
     log.debug('Express server listening on port ' + server.address().port);
 });
 
-var io = require('socket.io').listen(server);
-
-io.sockets.on('connection', function (socket) {
-    socket.on('message', function (text, cb) {
-        socket.broadcast.emit('message', text);
-        cb('err');
-    });
-});
+require('../socket')(server);
