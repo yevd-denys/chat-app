@@ -21,15 +21,13 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 app.use(cookieParser());
 
-var mongoose = require('./libs/mongoose');
-
-var MongoStore = require('connect-mongo')(express);
+var sessionStore = require('./libs/sessionStore');
 
 app.use(express.session({
     secret: config.get('session:secret'),
     key: config.get('session:key'),
     cookie: config.get('session:cookie'),
-    store: new MongoStore({mongooseConnection: mongoose.connection})
+    store: sessionStore
 }));
 
 app.use(func);
